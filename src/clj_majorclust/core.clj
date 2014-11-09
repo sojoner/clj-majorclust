@@ -1,9 +1,6 @@
 (ns clj-majorclust.core
   (:require [loom.graph :refer :all]))
 
-; a weighted graph
-(def wg (weighted-graph {:a {:b 0.1 :c 0.2} :c {:d 0.3} :e {:b 0.05 :d 0.05}}))
-
 (defn argmax [vertex g]
   (loop [edges (filter (fn [u] (has-edge? g u vertex)) (nodes g))
          max_weight 0.0
@@ -26,7 +23,22 @@
         (recur
           g
           (rest vertices)
-          (if (not= ((first vertices) assign-func) (nearest assign-func))
-            (assoc assign-func (first vertices) (nearest assign-func))
+          (if (not= (get assign-func (first vertices)) (get assign-func nearest))
+            (assoc assign-func (first vertices) (get assign-func nearest))
             assign-func)
-          (if (not= ((first vertices) assign-func) (nearest assign-func)) false true))))))
+          (if (not= (get assign-func (first vertices)) (get assign-func nearest)) false true))))))
+
+(defn get-clusters [assign-func]
+  (loop [keys (keys assign-func)
+         result {}]
+    (let [node-id (first keys)
+          cluster-id (get assign-func node-id)]
+      (if (empty? keys)
+        result
+        (recur
+          (rest keys)
+          (if (contains? result (keyword (str cluster-id)))
+            (assoc result (keyword (str cluster-id)) (conj (get result (keyword (str cluster-id))) node-id))
+            (assoc result (keyword (str cluster-id))  #{node-id}))))
+      )
+))

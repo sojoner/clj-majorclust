@@ -7,11 +7,10 @@ actually don't use this ;-)
 
         lein deps
 
-in the repl
-
-        (require '[clj-majorclust.core :as me] :reload)
-        (me/do-majorclust me/wg)
-
+Have a look add the very simple tests. I have been downloading some sample cluster data sets [here](http://cs.joensuu.fi/sipu/datasets/) to how
+majorclust is performing. To be able to do simple vector comparison in the euklidian space,
+I have taken a look at [infer](https://github.com/sojoner/infer.git) forked it and use some
+measurements in the similarity namespace.
 
 ## License
 
